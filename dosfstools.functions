@@ -39,7 +39,7 @@ case "$package" in
 		build_provides mkdosfs mkfs.msdos mkfs.vfat
 		
 		build_provides fatlabel
-		build_provides dosfatlabel
+		build_provides dosfslabel
 
 		depends build_musl_cross_make_build
 		build_needs "$libertine_build"-cc "$libertine_build"-gcc "$libertine_build"-ar "$libertine_build"-ld "$libertine_build"-ranlib
@@ -68,7 +68,7 @@ case "$package" in
 esac
 
 
-build_needs sed
+build_needs sed mv chmod
 _libertine_compile_dosfstools_internal()
 {
 	local destinationSysrootPath="$1"
@@ -94,6 +94,20 @@ _libertine_compile_dosfstools_internal()
 		else
 			libertine_public_make install
 		fi
+	
+	popd
+	
+	pushd "$destinationSysrootPath"/usr
+		
+		mv sbin bin
+		
+	popd
+	
+	pushd "$destinationSysrootPath"/usr/bin
+	
+		chmod 0700 fsck.fat
+		chmod 0700 mkfs.fat
+		chmod 0700 fatlabel
 	
 	popd
 	
